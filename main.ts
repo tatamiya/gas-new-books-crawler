@@ -3,7 +3,7 @@ function crawlingNewBooks() {
 
 
   let xml = UrlFetchApp.fetch(url).getContentText();
-  
+
   let document = XmlService.parse(xml);
 
   let root = document.getRootElement();
@@ -16,13 +16,21 @@ function crawlingNewBooks() {
 
   let items = channel.getChildren('item');
 
-  var sheet = SpreadsheetApp.getActiveSheet();
+  let pubDateJST = new Date(listPubDateText).toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
+  let activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  let todaysSheet = activeSpreadsheet.getSheetByName(pubDateJST);
+  if (todaysSheet != null) {
+    activeSpreadsheet.deleteSheet(todaysSheet);
+  }
+  todaysSheet = activeSpreadsheet.insertSheet(pubDateJST);
+  todaysSheet.appendRow(['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']);
+
   items.forEach(item => {
 
     let title = item.getChild('title').getText();
     let url = item.getChild('link').getText();
     let split_url = url.split('/')
-    let isbn = split_url[split_url.length-1];
+    let isbn = split_url[split_url.length - 1];
 
     let pubDateText = item.getChild('pubDate').getText();
     let pubDate = new Date(pubDateText);
@@ -33,6 +41,6 @@ function crawlingNewBooks() {
     let labels = categories.map(category => category.getText()).join(', ');
 
     // ISBN, PublishDate, Title+Authors, Category, URL
-    sheet.appendRow([isbn, pubDateISO, title, labels, url, listPubDateISO, listUpdateDateISO]);
+    todaysSheet.appendRow([isbn, pubDateISO, title, labels, url, listPubDateISO, listUpdateDateISO]);
   });
 }
