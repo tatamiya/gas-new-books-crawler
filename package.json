@@ -1,0 +1,24 @@
+{
+  "name": "new-book-crawler",
+  "version": "1.0.0",
+  "description": "Crawling new book information from 版元ドットコム(https://www.hanmoto.com/)",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tatamiya/gas-new-books-crawler.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tatamiya/gas-new-books-crawler/issues"
+  },
+  "homepage": "https://github.com/tatamiya/gas-new-books-crawler#readme",
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.47",
+    "typescript": "^4.6.4"
+  }
+}
