@@ -1,0 +1,6 @@
+dist/**
+node_modules/**
+.clasp.json
+.clasprc.json
+creds.json
+client_secret_*.apps.googleusercontent.com.json
