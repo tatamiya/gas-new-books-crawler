@@ -4,19 +4,9 @@ function crawlingNewBooks() {
 
   let xml = UrlFetchApp.fetch(url).getContentText();
 
-  let document = XmlService.parse(xml);
+  let bookList = parseXML(xml);
 
-  let root = document.getRootElement();
-
-  let channel = root.getChild('channel');
-  let listPubDateText = channel.getChild('pubDate').getText();
-  let listPubDateISO = new Date(listPubDateText).toISOString();
-  let listUpdateDateText = channel.getChild('lastBuildDate').getText();
-  let listUpdateDateISO = new Date(listUpdateDateText).toISOString();
-
-  let items = channel.getChildren('item');
-
-  let pubDateJST = new Date(listPubDateText).toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
+  let pubDateJST = bookList.createdDate.toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
   let activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet = activeSpreadsheet.getSheetByName(pubDateJST);
   if (todaysSheet != null) {
@@ -25,24 +15,69 @@ function crawlingNewBooks() {
   todaysSheet = activeSpreadsheet.insertSheet(pubDateJST);
   todaysSheet.appendRow(['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']);
 
-  items.forEach(item => {
+  bookList.books.forEach(newBook => {
 
-    let title = item.getChild('title').getText();
-    let url = item.getChild('link').getText();
-    let split_url = url.split('/')
-    let isbn = split_url[split_url.length - 1];
-
-    let pubDateText = item.getChild('pubDate').getText();
-    let pubDate = new Date(pubDateText);
-    //let pubDateTextJST = pubDate.toLocaleDateString({ timeZone: 'Asia/Tokyo' }, options);
-    let pubDateISO = pubDate.toISOString();
-
-    let categories = item.getChildren('category');
-    let labels = categories.map(category => category.getText()).join(', ');
+    let row = newBook.toRow(bookList.createdDate, bookList.lastUpdatedDate)
 
     // ISBN, PublishDate, Title+Authors, Category, URL
-    todaysSheet!.appendRow([isbn, pubDateISO, title, labels, url, listPubDateISO, listUpdateDateISO]);
+    todaysSheet!.appendRow(row);
   });
 }
 
-export { crawlingNewBooks };
+class BookList {
+  public createdDate: Date;
+  public lastUpdatedDate: Date;
+
+  public books: Array<BookInfo> = [];
+
+  constructor(document: GoogleAppsScript.XML_Service.Document) {
+    let root = document.getRootElement();
+
+    let channel = root.getChild('channel');
+    let listPubDateText = channel.getChild('pubDate').getText();
+    this.createdDate = new Date(listPubDateText);//.toISOString();
+    let listUpdateDateText = channel.getChild('lastBuildDate').getText();
+    this.lastUpdatedDate = new Date(listUpdateDateText);//.toISOString();
+
+    let items = channel.getChildren('item');
+    items.forEach(item => {
+      let book = new BookInfo(item);
+      this.books.push(book);
+    });
+  }
+}
+
+class BookInfo {
+  public title: string;
+  public url: string;
+  public isbn: string;
+  public pubDate: Date;
+  public categories: Array<string>;
+
+  constructor(item: GoogleAppsScript.XML_Service.Element) {
+    this.title = item.getChild('title').getText();
+    this.url = item.getChild('link').getText();
+
+    let split_url = this.url.split('/')
+    this.isbn = split_url[split_url.length - 1];
+
+    let pubDateText = item.getChild('pubDate').getText();
+    this.pubDate = new Date(pubDateText);
+
+    let categories = item.getChildren('category');
+    this.categories = categories.map(category => category.getText());
+  }
+
+  toRow(createdDate: Date, lastUpdatedDate: Date): Array<string> {
+    let pubDateISO = this.pubDate.toISOString();
+    return [this.isbn, pubDateISO, this.title, this.categories.join(', '), this.url, createdDate.toISOString(), lastUpdatedDate.toISOString()]
+  }
+
+}
+
+function parseXML(xml: string): BookList {
+  let document = XmlService.parse(xml);
+  return new BookList(document)
+}
+
+export { crawlingNewBooks, parseXML, BookList, BookInfo };
