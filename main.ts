@@ -41,6 +41,8 @@ function crawlingNewBooks() {
     let labels = categories.map(category => category.getText()).join(', ');
 
     // ISBN, PublishDate, Title+Authors, Category, URL
-    todaysSheet.appendRow([isbn, pubDateISO, title, labels, url, listPubDateISO, listUpdateDateISO]);
+    todaysSheet!.appendRow([isbn, pubDateISO, title, labels, url, listPubDateISO, listUpdateDateISO]);
   });
 }
+
+export { crawlingNewBooks };
