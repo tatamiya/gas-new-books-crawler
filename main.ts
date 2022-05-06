@@ -10,7 +10,7 @@ function crawlingNewBooks() {
   let activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
-  todaysSheet.appendRow(['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']);
+  todaysSheet!.appendRow(bookList.generateHeader());
 
   bookList.books.forEach(newBook => {
 
@@ -38,6 +38,10 @@ class BookList {
   public lastUpdatedDate: Date;
 
   public books: Array<BookInfo> = [];
+
+  generateHeader(): Array<string> {
+    return ['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']
+  }
 
   constructor(document: GoogleAppsScript.XML_Service.Document) {
     let root = document.getRootElement();
