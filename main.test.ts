@@ -1,4 +1,4 @@
-import { crawlingNewBooks } from "./main";
+import { BookInfo, BookList } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -91,7 +91,28 @@ class SheetRow {
     lastUpdatedDate: string | undefined;
 }
 
+var mockBooksInfo: Array<BookInfo> = [
+    {
+        title: "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+        url: "http://example.com/bd/isbn/1111111111111",
+        isbn: "1111111111111",
+        pubDate: new Date("Sun, 31 Mar 2024 00:00:00+0900"),
+        categories: ["自然科学"],
+    } as BookInfo,
+    {
+        title: "流体力学（後編） - 今井功(著 / 文) | 裳華房",
+        url: "http://www.hanmoto.com/bd/isbn/9999999999999",
+        isbn: "9999999999999",
+        pubDate: new Date("Thu, 29 Feb 2124 00:00:00+0900"),
+        categories: [""],
+    } as BookInfo,
+]
 
+var mockBookList: BookList = {
+    createdDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
+    lastUpdatedDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
+    books: mockBooksInfo,
+};
 
 describe("main.ts", () => {
     test("integration test", () => {
@@ -108,7 +129,13 @@ describe("main.ts", () => {
             return initialSpreadSheetApp;
         });
 
-        crawlingNewBooks()
+        jest.mock("./main");
+        const main = require("./main");
+        main.parseXML = jest.fn().mockImplementation(_ => {
+            return mockBookList
+        })
+
+        main.crawlingNewBooks()
 
     });
 });
