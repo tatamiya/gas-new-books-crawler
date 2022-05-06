@@ -8,11 +8,8 @@ function crawlingNewBooks() {
 
   let pubDateJST = bookList.createdDate.toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
   let activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  let todaysSheet = activeSpreadsheet.getSheetByName(pubDateJST);
-  if (todaysSheet != null) {
-    activeSpreadsheet.deleteSheet(todaysSheet);
-  }
-  todaysSheet = activeSpreadsheet.insertSheet(pubDateJST);
+  let todaysSheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
+
   todaysSheet.appendRow(['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']);
 
   bookList.books.forEach(newBook => {
@@ -22,6 +19,18 @@ function crawlingNewBooks() {
     // ISBN, PublishDate, Title+Authors, Category, URL
     todaysSheet!.appendRow(row);
   });
+}
+
+function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name: string): GoogleAppsScript.Spreadsheet.Sheet {
+
+  let namedSheet = ss.getSheetByName(name);
+  if (namedSheet != null) {
+    ss.deleteSheet(namedSheet);
+  }
+
+  let newSheet = ss.insertSheet(name);
+
+  return newSheet
 }
 
 class BookList {
