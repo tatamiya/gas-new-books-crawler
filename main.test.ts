@@ -112,7 +112,7 @@ var mockBookList: BookList = {
     createdDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
     lastUpdatedDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
     books: mockBooksInfo,
-};
+} as BookList;
 
 describe("main.ts", () => {
     test("integration test", () => {
