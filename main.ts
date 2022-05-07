@@ -10,11 +10,7 @@ function crawlingNewBooks() {
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
-  todaysSheet!.appendRow(bookList.generateHeader());
-
-  bookList.books.forEach(newBook => {
-
-    let row: Array<string> = newBook.toRow(bookList.createdDate, bookList.lastUpdatedDate)
+  bookList.toRows().forEach(row => {
 
     // ISBN, PublishDate, Title+Authors, Category, URL
     todaysSheet!.appendRow(row);
@@ -39,10 +35,6 @@ class BookList {
 
   public books: Array<BookInfo> = [];
 
-  generateHeader(): Array<string> {
-    return ['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時']
-  }
-
   constructor(document: GoogleAppsScript.XML_Service.Document) {
     let root = document.getRootElement();
 
@@ -57,6 +49,26 @@ class BookList {
       let book = new BookInfo(item);
       this.books.push(book);
     });
+  }
+
+  toRows(): Array<Array<string>> {
+    let header = ['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時'];
+    let rows = [header];
+    this.books.forEach(newBook => {
+
+      let row = [
+        newBook.extractISBN(),
+        newBook.pubDate.toISOString(),
+        newBook.title,
+        newBook.categories.join(', '),
+        newBook.url,
+        this.createdDate.toISOString(),
+        this.lastUpdatedDate.toISOString()
+      ];
+      rows.push(row);
+    });
+
+    return rows
   }
 }
 
@@ -82,12 +94,6 @@ class BookInfo {
     let isbn = split_url[split_url.length - 1];
     return isbn
   }
-
-  toRow(createdDate: Date, lastUpdatedDate: Date): Array<string> {
-    let pubDateISO = this.pubDate.toISOString();
-    return [this.extractISBN(), pubDateISO, this.title, this.categories.join(', '), this.url, createdDate.toISOString(), lastUpdatedDate.toISOString()]
-  }
-
 }
 
 function parseXML(xml: string): BookList {
