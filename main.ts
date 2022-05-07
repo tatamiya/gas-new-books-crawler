@@ -63,16 +63,12 @@ class BookList {
 class BookInfo {
   public title: string;
   public url: string;
-  public isbn: string;
   public pubDate: Date;
   public categories: Array<string>;
 
   constructor(item: GoogleAppsScript.XML_Service.Element) {
     this.title = item.getChild('title').getText();
     this.url = item.getChild('link').getText();
-
-    let split_url = this.url.split('/')
-    this.isbn = split_url[split_url.length - 1];
 
     let pubDateText = item.getChild('pubDate').getText();
     this.pubDate = new Date(pubDateText);
@@ -81,9 +77,15 @@ class BookInfo {
     this.categories = categories.map(category => category.getText());
   }
 
+  extractISBN(): string {
+    let split_url = this.url.split('/')
+    let isbn = split_url[split_url.length - 1];
+    return isbn
+  }
+
   toRow(createdDate: Date, lastUpdatedDate: Date): Array<string> {
     let pubDateISO = this.pubDate.toISOString();
-    return [this.isbn, pubDateISO, this.title, this.categories.join(', '), this.url, createdDate.toISOString(), lastUpdatedDate.toISOString()]
+    return [this.extractISBN(), pubDateISO, this.title, this.categories.join(', '), this.url, createdDate.toISOString(), lastUpdatedDate.toISOString()]
   }
 
 }

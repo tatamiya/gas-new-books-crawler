@@ -95,14 +95,12 @@ var mockBooksInfo: Array<BookInfo> = [
     {
         title: "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
         url: "http://example.com/bd/isbn/1111111111111",
-        isbn: "1111111111111",
         pubDate: new Date("Sun, 31 Mar 2024 00:00:00+0900"),
         categories: ["自然科学"],
     } as BookInfo,
     {
         title: "流体力学（後編） - 今井功(著 / 文) | 裳華房",
         url: "http://www.hanmoto.com/bd/isbn/9999999999999",
-        isbn: "9999999999999",
         pubDate: new Date("Thu, 29 Feb 2124 00:00:00+0900"),
         categories: [""],
     } as BookInfo,
