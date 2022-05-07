@@ -20,7 +20,7 @@ var inputXML = `
             <![CDATA[流体力学（後編） - 今井功(著 / 文) | 裳華房]]>
                 </title>
                 <pubDate > Thu, 29 Feb 2124 00:00:00+0900 </pubDate>
-                <link> http://www.hanmoto.com/bd/isbn/9999999999999</link>
+                <link> http://example.com/bd/isbn/9999999999999</link>
         </item>
     </channel>
     </rss>
@@ -100,7 +100,7 @@ var mockBooksInfo: Array<BookInfo> = [
     } as BookInfo,
     {
         title: "流体力学（後編） - 今井功(著 / 文) | 裳華房",
-        url: "http://www.hanmoto.com/bd/isbn/9999999999999",
+        url: "http://example.com/bd/isbn/9999999999999",
         pubDate: new Date("Thu, 29 Feb 2124 00:00:00+0900"),
         categories: [""],
     } as BookInfo,
