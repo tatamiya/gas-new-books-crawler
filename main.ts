@@ -105,15 +105,11 @@ class BookInfo {
   public pubDate: Date;
   public categories: Array<string>;
 
-  constructor(item: GoogleAppsScript.XML_Service.Element) {
-    this.title = item.getChild('title').getText();
-    this.url = item.getChild('link').getText();
-
-    let pubDateText = item.getChild('pubDate').getText();
-    this.pubDate = new Date(pubDateText);
-
-    let categories = item.getChildren('category');
-    this.categories = categories.map(category => category.getText());
+  constructor(title: string, url: string, pubDate: string, categories: Array<string>) {
+    this.title = title;
+    this.url = url;
+    this.pubDate = new Date(pubDate);
+    this.categories = categories;
   }
 
   extractISBN(): string {
@@ -135,7 +131,15 @@ function parseXML(xml: string): BookList {
 
   let items = channel.getChildren('item');
   items.forEach(item => {
-    let book = new BookInfo(item);
+    let title = item.getChild('title').getText();
+    let url = item.getChild('link').getText();
+
+    let pubDateText = item.getChild('pubDate').getText();
+
+    let categoryElement = item.getChildren('category');
+    let categories = categoryElement.map(category => category.getText());
+
+    let book = new BookInfo(title, url, pubDateText, categories);
     bookList.addBook(book)
   });
   return bookList

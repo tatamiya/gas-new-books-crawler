@@ -74,24 +74,23 @@ class SpreadsheetMock {
 
 
 var mockBooksInfo: Array<BookInfo> = [
-    {
-        title: "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
-        url: "http://example.com/bd/isbn/1111111111111",
-        pubDate: new Date("Sun, 31 Mar 2024 00:00:00+0900"),
-        categories: ["自然科学"],
-    } as BookInfo,
-    {
-        title: "流体力学（後編） - 今井功(著 / 文) | 裳華房",
-        url: "http://example.com/bd/isbn/9999999999999",
-        pubDate: new Date("Thu, 29 Feb 2124 00:00:00+0900"),
-        categories: [""],
-    } as BookInfo,
-]
-
+    new BookInfo(
+        "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+        "http://example.com/bd/isbn/1111111111111",
+        "Sun, 31 Mar 2024 00:00:00+0900",
+        ["自然科学"],
+    ),
+    new BookInfo(
+        "流体力学（後編） - 今井功(著 / 文) | 裳華房",
+        "http://example.com/bd/isbn/9999999999999",
+        "Thu, 29 Feb 2124 00:00:00+0900",
+        [""],
+    ),
+];
 var mockBookList: BookList = new BookList("Tue, 05 Apr 2122 23:04:52+0900", "Tue, 05 Apr 2122 23:04:52+0900");
 mockBooksInfo.forEach(bookInfo => {
     mockBookList.addBook(bookInfo);
-})
+});
 
 
 describe("main.ts", () => {
