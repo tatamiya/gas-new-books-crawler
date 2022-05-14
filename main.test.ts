@@ -94,6 +94,19 @@ mockBooksInfo.forEach(bookInfo => {
 
 
 describe("main.ts", () => {
+
+    test("extract ISBN from URL in BookInfo", () => {
+        let inputBookInfo = new BookInfo(
+            "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "http://example.com/bd/isbn/1111111111111",
+            "Sun, 31 Mar 2024 00:00:00+0900",
+            [""],
+        )
+        let expectedISBN = "1111111111111";
+        let actualISBN = inputBookInfo.extractISBN();
+
+        expect(actualISBN).toBe(expectedISBN);
+    });
     test("integration test", () => {
         UrlFetchApp.fetch = jest.fn().mockImplementation(_ => {
             return {
