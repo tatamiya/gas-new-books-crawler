@@ -60,7 +60,7 @@ class SpreadsheetAppMock {
 
 class SpreadsheetMock {
     public name: string;
-    public rows: Array<SheetRow>;
+    public rows: Array<Array<string>>;
 
     constructor(sheetName: string) {
         this.name = sheetName;
@@ -68,28 +68,10 @@ class SpreadsheetMock {
     }
 
     appendRow(bookInfo: Array<string>) {
-        let newRow: SheetRow = {
-            isbn: bookInfo[0],
-            pubDate: bookInfo[1],
-            title: bookInfo[2],
-            genres: bookInfo[3],
-            url: bookInfo[4],
-            createdDate: bookInfo[5],
-            lastUpdatedDate: bookInfo[6],
-        }
-        this.rows.push(newRow);
+        this.rows.push(bookInfo);
     }
 }
 
-class SheetRow {
-    isbn: string | undefined;
-    pubDate: string | undefined;
-    title: string | undefined;
-    genres: string | undefined;
-    url: string | undefined;
-    createdDate: string | undefined;
-    lastUpdatedDate: string | undefined;
-}
 
 var mockBooksInfo: Array<BookInfo> = [
     {

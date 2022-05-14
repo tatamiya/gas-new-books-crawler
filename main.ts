@@ -13,7 +13,7 @@ function crawlingNewBooks() {
   bookList.toRows().forEach(row => {
 
     // ISBN, PublishDate, Title+Authors, Category, URL
-    todaysSheet!.appendRow(row);
+    todaysSheet!.appendRow(row.toArray());
   });
 }
 
@@ -51,25 +51,59 @@ class BookList {
     });
   }
 
-  toRows(): Array<Array<string>> {
-    let header = ['ISBN', '出版予定日', 'タイトル・著者・出版社', 'カテゴリー', 'Hanmoto URL', 'リスト作成日時', '最終更新日時'];
-    let rows = [header];
+  toRows(): Array<SheetRow> {
+    let header = new SheetRow(
+      'ISBN',
+      '出版予定日',
+      'タイトル・著者・出版社',
+      'カテゴリー',
+      'Hanmoto URL',
+      'リスト作成日時',
+      '最終更新日時',
+    );
+
+    let rows: Array<SheetRow> = [header];
     this.books.forEach(newBook => {
 
-      let row = [
+      let row = new SheetRow(
         newBook.extractISBN(),
         newBook.pubDate.toISOString(),
         newBook.title,
         newBook.categories.join(', '),
         newBook.url,
         this.createdDate.toISOString(),
-        this.lastUpdatedDate.toISOString()
-      ];
+        this.lastUpdatedDate.toISOString(),
+      )
       rows.push(row);
     });
 
     return rows
   }
+}
+
+class SheetRow {
+  private isbn: string;
+  private pubDate: string;
+  private title: string;
+  private categories: string;
+  private url: string;
+  private createdDate: string;
+  private lastUpdatedDate: string;
+
+  constructor(isbn: string, pubDate: string, title: string, categories: string, url: string, createdDate: string, lastUpdatedDate: string) {
+    this.isbn = isbn;
+    this.pubDate = pubDate;
+    this.title = title;
+    this.categories = categories;
+    this.url = url;
+    this.createdDate = createdDate;
+    this.lastUpdatedDate = lastUpdatedDate;
+  }
+
+  toArray(): Array<string> {
+    return [this.isbn, this.pubDate, this.title, this.categories, this.url, this.createdDate, this.lastUpdatedDate]
+  }
+
 }
 
 class BookInfo {
@@ -101,4 +135,4 @@ function parseXML(xml: string): BookList {
   return new BookList(document)
 }
 
-export { crawlingNewBooks, parseXML, BookList, BookInfo };
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow };
