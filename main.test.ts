@@ -1,4 +1,4 @@
-import { BookInfo, BookList } from "./main";
+import { BookInfo, BookList, SheetRow } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -78,7 +78,7 @@ var mockBooksInfo: Array<BookInfo> = [
         "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
         "http://example.com/bd/isbn/1111111111111",
         "Sun, 31 Mar 2024 00:00:00+0900",
-        ["自然科学"],
+        ["自然科学", "文庫"],
     ),
     new BookInfo(
         "流体力学（後編） - 今井功(著 / 文) | 裳華房",
@@ -107,6 +107,37 @@ describe("main.ts", () => {
 
         expect(actualISBN).toBe(expectedISBN);
     });
+
+    test("generate sheet rows from BookList", () => {
+        let inputBookList = mockBookList;
+
+        let actualSeetRows = mockBookList.toRows();
+
+        expect(actualSeetRows.length).toBe(3);
+
+        let expectedHeaderRow = new SheetRow(
+            'ISBN',
+            '出版予定日',
+            'タイトル・著者・出版社',
+            'カテゴリー',
+            'Hanmoto URL',
+            'リスト作成日時',
+            '最終更新日時',
+        );
+        expect(actualSeetRows[0]).toStrictEqual(expectedHeaderRow);
+
+        let expectedSecondRow = new SheetRow(
+            "1111111111111",
+            "2024-03-30T15:00:00.000Z",
+            "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "自然科学, 文庫",
+            "http://example.com/bd/isbn/1111111111111",
+            "2122-04-05T14:04:52.000Z",
+            "2122-04-05T14:04:52.000Z",
+        )
+        expect(actualSeetRows[1]).toStrictEqual(expectedSecondRow);
+    });
+
     test("integration test", () => {
         UrlFetchApp.fetch = jest.fn().mockImplementation(_ => {
             return {
