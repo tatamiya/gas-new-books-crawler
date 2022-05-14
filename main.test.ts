@@ -88,11 +88,11 @@ var mockBooksInfo: Array<BookInfo> = [
     } as BookInfo,
 ]
 
-var mockBookList: BookList = {
-    createdDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
-    lastUpdatedDate: new Date("Tue, 05 Apr 2122 23:04:52+0900"),
-    books: mockBooksInfo,
-} as BookList;
+var mockBookList: BookList = new BookList("Tue, 05 Apr 2122 23:04:52+0900", "Tue, 05 Apr 2122 23:04:52+0900");
+mockBooksInfo.forEach(bookInfo => {
+    mockBookList.addBook(bookInfo);
+})
+
 
 describe("main.ts", () => {
     test("integration test", () => {

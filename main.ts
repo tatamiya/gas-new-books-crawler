@@ -31,24 +31,17 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
 
 class BookList {
   public createdDate: Date;
-  public lastUpdatedDate: Date;
+  private lastUpdatedDate: Date;
 
-  public books: Array<BookInfo> = [];
+  private books: Array<BookInfo> = [];
 
-  constructor(document: GoogleAppsScript.XML_Service.Document) {
-    let root = document.getRootElement();
+  constructor(createdDate: string, lastUpdatedDate: string) {
+    this.createdDate = new Date(createdDate)
+    this.lastUpdatedDate = new Date(lastUpdatedDate);
+  }
 
-    let channel = root.getChild('channel');
-    let listPubDateText = channel.getChild('pubDate').getText();
-    this.createdDate = new Date(listPubDateText);//.toISOString();
-    let listUpdateDateText = channel.getChild('lastBuildDate').getText();
-    this.lastUpdatedDate = new Date(listUpdateDateText);//.toISOString();
-
-    let items = channel.getChildren('item');
-    items.forEach(item => {
-      let book = new BookInfo(item);
-      this.books.push(book);
-    });
+  addBook(book: BookInfo) {
+    this.books.push(book)
   }
 
   toRows(): Array<SheetRow> {
@@ -132,7 +125,20 @@ class BookInfo {
 
 function parseXML(xml: string): BookList {
   let document = XmlService.parse(xml);
-  return new BookList(document)
+  let root = document.getRootElement();
+
+  let channel = root.getChild('channel');
+  let listPubDateText = channel.getChild('pubDate').getText();
+  let listUpdateDateText = channel.getChild('lastBuildDate').getText();
+
+  let bookList = new BookList(listPubDateText, listUpdateDateText);
+
+  let items = channel.getChildren('item');
+  items.forEach(item => {
+    let book = new BookInfo(item);
+    bookList.addBook(book)
+  });
+  return bookList
 }
 
 export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow };
