@@ -6,7 +6,7 @@ function crawlingNewBooks() {
 
   let bookList: BookList = parseXML(xml);
 
-  let pubDateJST = bookList.createdDate.toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
+  let pubDateJST = bookList.uploadDate.toLocaleDateString('japanese', { year: 'numeric', month: 'long', day: 'numeric' });
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
@@ -30,13 +30,13 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
 }
 
 class BookList {
-  public createdDate: Date;
+  public uploadDate: Date;
   private lastUpdatedDate: Date;
 
   private books: Array<BookInfo> = [];
 
   constructor(createdDate: string, lastUpdatedDate: string) {
-    this.createdDate = new Date(createdDate)
+    this.uploadDate = new Date(createdDate)
     this.lastUpdatedDate = new Date(lastUpdatedDate);
   }
 
@@ -64,7 +64,7 @@ class BookList {
         newBook.title,
         newBook.categories.join(', '),
         newBook.url,
-        this.createdDate.toISOString(),
+        this.uploadDate.toISOString(),
         this.lastUpdatedDate.toISOString(),
       )
       rows.push(row);
