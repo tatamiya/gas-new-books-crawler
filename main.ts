@@ -102,6 +102,12 @@ class SheetRow {
 class BookInfo {
   public title: string;
   public url: string;
+  public authors: string = "";
+  public series: string = "";
+  public volume: string = "";
+  public ccode: string = "";
+  public createdDate: Date = new Date("");
+  public lastUpdatedDate: Date = new Date("");
   public pubDate: Date;
   public categories: Array<string>;
 
