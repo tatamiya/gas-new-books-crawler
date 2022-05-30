@@ -26,6 +26,32 @@ var inputXML = `
     </rss>
 `;
 
+var mockOpenbdResponse = [
+    {
+        "onix": {
+            "DescriptiveDetail": {
+                "Subject": [{ "SubjectCode": "1040" }]
+            }
+        },
+        "hanmoto": {
+            "datemodified": '2024-05-17 10:05:43',
+            "datecreated": '2024-05-15 10:04:37',
+            "datekoukai": '2024-05-15'
+        },
+        "summary": {
+            "isbn": '1111111111111',
+            "title": 'ご冗談でしょう、tatamiyaさん',
+            "volume": '1',
+            "series": 'シリーズ畳の不思議',
+            "publisher": '畳屋書店',
+            "pubdate": '20240531',
+            "cover": 'https://cover.openbd.jp/9784416522516.jpg',
+            "author": 'tatamiya tamiya／著 畳の科学／編集'
+
+        }
+    }
+]
+
 class SpreadsheetAppMock {
     public sheet: SpreadsheetMock;
 
