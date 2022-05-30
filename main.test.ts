@@ -103,7 +103,7 @@ describe("main.ts", () => {
             [""],
         )
         let expectedISBN = "1111111111111";
-        let actualISBN = inputBookInfo.extractISBN();
+        let actualISBN = inputBookInfo.isbn;
 
         expect(actualISBN).toBe(expectedISBN);
     });

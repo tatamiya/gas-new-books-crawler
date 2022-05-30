@@ -100,6 +100,7 @@ class SheetRow {
 }
 
 class BookInfo {
+  public isbn: string;
   public title: string;
   public url: string;
   public authors: string = "";
@@ -116,6 +117,7 @@ class BookInfo {
     this.url = url;
     this.pubDate = new Date(pubDate);
     this.categories = categories;
+    this.isbn = this.extractISBN();
   }
 
   extractISBN(): string {
