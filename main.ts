@@ -10,6 +10,12 @@ function crawlingNewBooks() {
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
+  bookList.books.forEach(async book => {
+    let isbn = book.isbn;
+    let openbdRes = await requestOpenbd(isbn);
+    book.addInfoFromOpenbd(openbdRes);
+  });
+
   bookList.toRows().forEach(row => {
 
     // ISBN, PublishDate, Title+Authors, Category, URL
@@ -29,11 +35,20 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
   return newSheet
 }
 
+interface openbdResponse {
+  hoge: string;
+  fuga: string;
+}
+
+async function requestOpenbd(isbn: string): Promise<openbdResponse> {
+  return { hoge: "hoge", fuga: "fuga" } as openbdResponse
+}
+
 class BookList {
   public uploadDate: Date;
   private lastUpdatedDate: Date;
 
-  private books: Array<BookInfo> = [];
+  public books: Array<BookInfo> = [];
 
   constructor(createdDate: string, lastUpdatedDate: string) {
     this.uploadDate = new Date(createdDate)
@@ -124,6 +139,10 @@ class BookInfo {
     let split_url = this.url.split('/')
     let isbn = split_url[split_url.length - 1];
     return isbn
+  }
+
+  addInfoFromOpenbd(resp: openbdResponse) {
+
   }
 }
 
