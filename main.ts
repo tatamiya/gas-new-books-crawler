@@ -36,12 +36,30 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
 }
 
 interface openbdResponse {
-  hoge: string;
-  fuga: string;
+  isbn: string;
+  title: string;
+  volume: string;
+  series: string;
+  publisher: string;
+  pubdate: string;
+  author: string;
+  datemodified: string;
+  datecreated: string;
+  datekoukai: string;
+  ccode: string;
 }
 
 async function requestOpenbd(isbn: string): Promise<openbdResponse> {
-  return { hoge: "hoge", fuga: "fuga" } as openbdResponse
+  let res = await fetch("https://api.openbd.jp/v1/get?isbn=9784416522516&pretty");
+  let jsonResp = await res.json();
+
+  let parsedResp: openbdResponse = {
+    ...jsonResp[0]["hanmoto"],
+    ...jsonResp[0]["summary"],
+    ccode: jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"][0]["SubjectCode"]
+  }
+
+  return parsedResp
 }
 
 class BookList {
@@ -172,4 +190,4 @@ function parseXML(xml: string): BookList {
   return bookList
 }
 
-export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow };
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse };
