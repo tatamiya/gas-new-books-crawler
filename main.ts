@@ -42,6 +42,7 @@ interface openbdResponse {
   series: string;
   publisher: string;
   pubdate: string;
+  cover: string;
   author: string;
   datemodified: string;
   datecreated: string;
@@ -191,4 +192,4 @@ function parseXML(xml: string): BookList {
   return bookList
 }
 
-export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse };
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbd };
