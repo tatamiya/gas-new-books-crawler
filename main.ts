@@ -50,7 +50,8 @@ interface openbdResponse {
 }
 
 async function requestOpenbd(isbn: string): Promise<openbdResponse> {
-  let res = await fetch("https://api.openbd.jp/v1/get?isbn=9784416522516&pretty");
+  let url = `https://api.openbd.jp/v1/get?isbn=${isbn}&pretty`
+  let res = await fetch(url);
   let jsonResp = await res.json();
 
   let parsedResp: openbdResponse = {
