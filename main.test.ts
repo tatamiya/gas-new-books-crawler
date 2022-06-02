@@ -1,4 +1,4 @@
-import { BookInfo, BookList, SheetRow } from "./main";
+import { BookInfo, BookList, openbdResponse, requestOpenbd, SheetRow } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -133,6 +133,35 @@ describe("main.ts", () => {
 
         expect(actualISBN).toBe(expectedISBN);
     });
+
+    test("request Openbd API and parse the response", async () => {
+        let inputISBN = '1111111111111';
+        let expectedResponse: openbdResponse = {
+            isbn: '1111111111111',
+            title: 'ご冗談でしょう、tatamiyaさん',
+            volume: '1',
+            series: 'シリーズ畳の不思議',
+            publisher: '畳屋書店',
+            pubdate: '20240531',
+            cover: 'https://cover.openbd.jp/9784416522516.jpg',
+            author: 'tatamiya tamiya／著 畳の科学／編集',
+            datemodified: '2024-05-17 10:05:43',
+            datecreated: '2024-05-15 10:04:37',
+            datekoukai: '2024-05-15',
+            ccode: "1040"
+        }
+
+        // As to mock of fetch, see https://www.leighhalliday.com/mock-fetch-jest
+        global.fetch = jest.fn().mockImplementation(async () =>
+            Promise.resolve({
+                json: () => Promise.resolve(mockOpenbdResponse),
+            })
+        );
+
+        let actualResponse = await requestOpenbd(inputISBN);
+        expect(actualResponse).toStrictEqual(expectedResponse);
+
+    })
 
     test("generate sheet rows from BookList", () => {
         let inputBookList = mockBookList;
