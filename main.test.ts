@@ -163,6 +163,41 @@ describe("main.ts", () => {
 
     })
 
+    test("add detailed information to BookInfo from Openbd API response", () => {
+        let inputParsedResponse: openbdResponse = {
+            isbn: '1111111111111',
+            title: 'ご冗談でしょう、tatamiyaさん',
+            volume: '1',
+            series: 'シリーズ畳の不思議',
+            publisher: '畳屋書店',
+            pubdate: '20240531',
+            cover: 'https://cover.openbd.jp/9784416522516.jpg',
+            author: 'tatamiya tamiya／著 畳の科学／編集',
+            datemodified: '2024-05-17 10:05:43',
+            datecreated: '2024-05-15 10:04:37',
+            datekoukai: '2024-05-15',
+            ccode: "1040"
+        };
+
+        let sampleBookInfo = new BookInfo(
+            "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "http://example.com/bd/isbn/1111111111111",
+            "Sun, 31 Mar 2024 00:00:00+0900",
+            [""],
+        );
+
+        sampleBookInfo.addInfoFromOpenbd(inputParsedResponse);
+
+        expect(sampleBookInfo.authors).toStrictEqual('tatamiya tamiya／著 畳の科学／編集');
+        expect(sampleBookInfo.title).toStrictEqual('ご冗談でしょう、tatamiyaさん');
+        expect(sampleBookInfo.series).toStrictEqual('シリーズ畳の不思議');
+        expect(sampleBookInfo.volume).toStrictEqual('1');
+        expect(sampleBookInfo.publisher).toStrictEqual('畳屋書店');
+        expect(sampleBookInfo.ccode).toStrictEqual('1040');
+        expect(sampleBookInfo.createdDate).toStrictEqual(new Date('2024-05-15 10:04:37'));
+        expect(sampleBookInfo.lastUpdatedDate).toStrictEqual(new Date('2024-05-17 10:05:43'));
+    });
+
     test("generate sheet rows from BookList", () => {
         let inputBookList = mockBookList;
 

@@ -141,6 +141,7 @@ class BookInfo {
   public authors: string = "";
   public series: string = "";
   public volume: string = "";
+  public publisher: string = "";
   public ccode: string = "";
   public createdDate: Date = new Date("");
   public lastUpdatedDate: Date = new Date("");
@@ -162,6 +163,17 @@ class BookInfo {
   }
 
   addInfoFromOpenbd(resp: openbdResponse) {
+    if (resp.title !== "") {
+      this.title = resp.title;
+    }
+    this.authors = resp.author;
+    this.series = resp.series;
+    this.volume = resp.volume;
+    this.publisher = resp.publisher;
+    this.ccode = resp.ccode;
+    this.createdDate = new Date(resp.datecreated);
+    this.lastUpdatedDate = new Date(resp.datemodified);
+
 
   }
 }
