@@ -138,7 +138,20 @@ class SheetRow {
   }
 
   toArray(): Array<string> {
-    return [this.isbn, this.pubDate, this.title, this.categories, this.url, this.createdDate, this.lastUpdatedDate]
+    return [
+      this.isbn,
+      this.pubDate,
+      this.title,
+      this.author,
+      this.publisher,
+      this.series,
+      this.volume,
+      this.categories,
+      this.ccode,
+      this.url,
+      this.createdDate,
+      this.lastUpdatedDate
+    ]
   }
 
 }
