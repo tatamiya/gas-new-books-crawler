@@ -110,22 +110,16 @@ class BookList {
 }
 
 class SheetRow {
-  private isbn: string;
-  private pubDate: string;
-  private title: string;
-  private categories: string;
-  private url: string;
-  private createdDate: string;
-  private lastUpdatedDate: string;
 
-  constructor(isbn: string, pubDate: string, title: string, categories: string, url: string, createdDate: string, lastUpdatedDate: string) {
-    this.isbn = isbn;
-    this.pubDate = pubDate;
-    this.title = title;
-    this.categories = categories;
-    this.url = url;
-    this.createdDate = createdDate;
-    this.lastUpdatedDate = lastUpdatedDate;
+  constructor(
+    private isbn: string,
+    private pubDate: string,
+    private title: string,
+    private categories: string,
+    private url: string,
+    private createdDate: string,
+    private lastUpdatedDate: string
+  ) {
   }
 
   toArray(): Array<string> {
