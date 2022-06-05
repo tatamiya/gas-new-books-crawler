@@ -258,6 +258,42 @@ describe("main.ts", () => {
             return mockBookList
         })
 
+        main.requestOpenbd = jest.fn().mockImplementation(async isbn => {
+            if (isbn === "1111111111111") {
+                return {
+                    isbn: '1111111111111',
+                    title: 'ご冗談でしょう、tatamiyaさん',
+                    volume: '1',
+                    series: 'シリーズ畳の不思議',
+                    publisher: '畳屋書店',
+                    pubdate: '20240531',
+                    cover: 'https://cover.openbd.jp/9784416522516.jpg',
+                    author: 'tatamiya tamiya／著 畳の科学／編集',
+                    datemodified: '2024-05-17 10:05:43',
+                    datecreated: '2024-05-15 10:04:37',
+                    datekoukai: '2024-05-15',
+                    ccode: "1040"
+                } as openbdResponse
+            } else if (isbn === "9999999999999") {
+                return {
+                    isbn: "9999999999999",
+                    title: "流体力学（後編）",
+                    volume: "24",
+                    series: "物理学選書",
+                    publisher: "裳華房",
+                    pubdate: "21240229",
+                    cover: "",
+                    author: "今井功",
+                    datemodified: "2124-01-01 10:05:43",
+                    datecreated: "2124-01-01 10:05:43",
+                    datekoukai: "2124-01-01",
+                    ccode: "3042",
+                } as openbdResponse
+            } else {
+                return null
+            }
+        });
+
         main.crawlingNewBooks()
 
     });
