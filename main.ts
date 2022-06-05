@@ -10,6 +10,7 @@ function crawlingNewBooks() {
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
+  // Fetch additional information from openBD API and add to book info.
   bookList.books.forEach(async book => {
     let isbn = book.isbn;
     let openbdRes = await requestOpenbd(isbn);
