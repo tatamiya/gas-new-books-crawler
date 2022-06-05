@@ -201,7 +201,7 @@ describe("main.ts", () => {
     test("generate sheet rows from BookList", () => {
         let inputBookList = mockBookList;
 
-        let actualSeetRows = mockBookList.toRows();
+        let actualSeetRows = inputBookList.toRows();
 
         expect(actualSeetRows.length).toBe(3);
 
@@ -209,7 +209,12 @@ describe("main.ts", () => {
             'ISBN',
             '出版予定日',
             'タイトル・著者・出版社',
+            '著者',
+            '出版社',
+            'シリーズ',
+            '巻',
             'カテゴリー',
+            'ccode',
             'Hanmoto URL',
             'リスト作成日時',
             '最終更新日時',
@@ -220,7 +225,12 @@ describe("main.ts", () => {
             "1111111111111",
             "2024-03-30T15:00:00.000Z",
             "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "",
+            "",
+            "",
+            "",
             "自然科学, 文庫",
+            "",
             "http://example.com/bd/isbn/1111111111111",
             "2122-04-05T14:04:52.000Z",
             "2122-04-05T14:04:52.000Z",
