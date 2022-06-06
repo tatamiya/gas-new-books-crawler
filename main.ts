@@ -14,7 +14,9 @@ function crawlingNewBooks() {
   bookList.books.forEach(async book => {
     let isbn = book.isbn;
     let openbdRes = await requestOpenbd(isbn);
-    book.addInfoFromOpenbd(openbdRes);
+    if (openbdRes !== null) {
+      book.addInfoFromOpenbd(openbdRes);
+    }
   });
 
   bookList.toRows().forEach(row => {
@@ -51,15 +53,25 @@ interface openbdResponse {
   ccode: string;
 }
 
-async function requestOpenbd(isbn: string): Promise<openbdResponse> {
+async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
   let url = `https://api.openbd.jp/v1/get?isbn=${isbn}&pretty`
   let res = await fetch(url);
   let jsonResp = await res.json();
 
+  if (jsonResp[0] === null) {
+    return null
+  }
+
+  let ccode: string;
+  if (typeof jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"] === "undefined") {
+    ccode = "";
+  } else {
+    ccode = jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"][0]["SubjectCode"]
+  }
   let parsedResp: openbdResponse = {
     ...jsonResp[0]["hanmoto"],
     ...jsonResp[0]["summary"],
-    ccode: jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"][0]["SubjectCode"]
+    ccode: ccode
   }
 
   return parsedResp
