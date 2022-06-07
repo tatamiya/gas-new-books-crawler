@@ -228,6 +228,53 @@ describe("main.ts", () => {
 
         });
 
+        test("return with empty fields when hanmoto fields are missing in API response.", async () => {
+            let mockOpenbdResponse = [
+                {
+                    "onix": {
+                        "DescriptiveDetail": {
+                            "Subject": [{ "SubjectCode": "1040" }]
+                        }
+                    },
+                    "summary": {
+                        "isbn": '1111111111111',
+                        "title": 'ご冗談でしょう、tatamiyaさん',
+                        "volume": '1',
+                        "series": 'シリーズ畳の不思議',
+                        "publisher": '畳屋書店',
+                        "pubdate": '20240531',
+                        "cover": 'https://cover.openbd.jp/9784416522516.jpg',
+                        "author": 'tatamiya tamiya／著 畳の科学／編集'
+                    }
+                }
+            ];
+            // As to mock of fetch, see https://www.leighhalliday.com/mock-fetch-jest
+            global.fetch = jest.fn().mockImplementation(async () => Promise.resolve({
+                json: () => Promise.resolve(mockOpenbdResponse),
+            })
+            );
+
+            let inputISBN = '1111111111111';
+            let expectedResponse: openbdResponse = {
+                isbn: '1111111111111',
+                title: 'ご冗談でしょう、tatamiyaさん',
+                volume: '1',
+                series: 'シリーズ畳の不思議',
+                publisher: '畳屋書店',
+                pubdate: '20240531',
+                cover: 'https://cover.openbd.jp/9784416522516.jpg',
+                author: 'tatamiya tamiya／著 畳の科学／編集',
+                datemodified: '',
+                datecreated: '',
+                datekoukai: '',
+                ccode: "1040"
+            };
+
+            let actualResponse = await requestOpenbd(inputISBN);
+            expect(actualResponse).toStrictEqual(expectedResponse);
+
+        });
+
     })
 
     test("add detailed information to BookInfo from Openbd API response", () => {

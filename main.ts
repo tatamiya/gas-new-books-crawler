@@ -69,11 +69,17 @@ async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
   } else {
     ccode = subject[0]["SubjectCode"];
   }
-  let parsedResp: openbdResponse = {
-    ...jsonResp[0]["hanmoto"],
+
+  let hanmoto = jsonResp[0]["hanmoto"];
+  if (typeof hanmoto === "undefined") {
+    hanmoto = { datemodified: "", datekoukai: "", datecreated: "" };
+  }
+
+  let parsedResp = {
+    ...hanmoto,
     ...jsonResp[0]["summary"],
     ccode: ccode
-  }
+  } as openbdResponse
 
   return parsedResp
 }
