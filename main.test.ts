@@ -94,7 +94,7 @@ mockBooksInfo.forEach(bookInfo => {
 
 
 describe("main.ts", () => {
-
+    // TODO: add a test case for error response.
     test("extract ISBN from URL in BookInfo", () => {
         let inputBookInfo = new BookInfo(
             "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
