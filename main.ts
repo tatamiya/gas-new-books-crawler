@@ -58,15 +58,16 @@ async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
   let res = await fetch(url);
   let jsonResp = await res.json();
 
-  if (jsonResp[0] === null) {
+  if (jsonResp === null || jsonResp[0] === null) {
     return null
   }
 
+  let subject = jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"];
   let ccode: string;
-  if (typeof jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"] === "undefined") {
+  if (typeof subject === "undefined" || subject.length === 0) {
     ccode = "";
   } else {
-    ccode = jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"][0]["SubjectCode"]
+    ccode = subject[0]["SubjectCode"];
   }
   let parsedResp: openbdResponse = {
     ...jsonResp[0]["hanmoto"],
