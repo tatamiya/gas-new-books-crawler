@@ -13,7 +13,7 @@ function crawlingNewBooks() {
   // Fetch additional information from openBD API and add to book info.
   bookList.books.forEach(async book => {
     let isbn = book.isbn;
-    let openbdRes = await requestOpenbd(isbn);
+    let openbdRes = await requestOpenbdAndParse(isbn);
     if (openbdRes !== null) {
       book.addInfoFromOpenbd(openbdRes);
     }
@@ -53,7 +53,7 @@ interface openbdResponse {
   ccode: string;
 }
 
-async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
+async function requestOpenbdAndParse(isbn: string): Promise<openbdResponse | null> {
   let url = `https://api.openbd.jp/v1/get?isbn=${isbn}&pretty`
   let res = await fetch(url);
   let jsonResp = await res.json();
@@ -251,4 +251,4 @@ function parseXML(xml: string): BookList {
   return bookList
 }
 
-export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbd };
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse };

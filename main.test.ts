@@ -1,4 +1,4 @@
-import { BookInfo, BookList, openbdResponse, requestOpenbd, SheetRow } from "./main";
+import { BookInfo, BookList, openbdResponse, requestOpenbdAndParse, SheetRow } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -157,7 +157,7 @@ describe("main.ts", () => {
                 ccode: "1040"
             };
 
-            let actualResponse = await requestOpenbd(inputISBN);
+            let actualResponse = await requestOpenbdAndParse(inputISBN);
             expect(actualResponse).toStrictEqual(expectedResponse);
 
         });
@@ -172,7 +172,7 @@ describe("main.ts", () => {
 
             let inputISBN = '1111111111111';
             let expectedResponse = null;
-            let actualResponse = await requestOpenbd(inputISBN);
+            let actualResponse = await requestOpenbdAndParse(inputISBN);
             expect(actualResponse).toStrictEqual(expectedResponse);
         });
 
@@ -199,7 +199,7 @@ describe("main.ts", () => {
 
             let inputISBN = '1111111111111';
             let expectedResponse = null;
-            let actualResponse = await requestOpenbd(inputISBN);
+            let actualResponse = await requestOpenbdAndParse(inputISBN);
             expect(actualResponse).toStrictEqual(expectedResponse);
         });
 
@@ -250,7 +250,7 @@ describe("main.ts", () => {
                 ccode: ""
             };
 
-            let actualResponse = await requestOpenbd(inputISBN);
+            let actualResponse = await requestOpenbdAndParse(inputISBN);
             expect(actualResponse).toStrictEqual(expectedResponse);
 
         });
@@ -297,7 +297,7 @@ describe("main.ts", () => {
                 ccode: "1040"
             };
 
-            let actualResponse = await requestOpenbd(inputISBN);
+            let actualResponse = await requestOpenbdAndParse(inputISBN);
             expect(actualResponse).toStrictEqual(expectedResponse);
 
         });
