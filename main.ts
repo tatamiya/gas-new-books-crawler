@@ -62,6 +62,11 @@ async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
     return null
   }
 
+  let summary = jsonResp[0]["summary"];
+  if (typeof summary === "undefined") {
+    return null
+  }
+
   let subject = jsonResp[0]["onix"]["DescriptiveDetail"]["Subject"];
   let ccode: string;
   if (typeof subject === "undefined" || subject.length === 0) {
@@ -77,7 +82,7 @@ async function requestOpenbd(isbn: string): Promise<openbdResponse | null> {
 
   let parsedResp = {
     ...hanmoto,
-    ...jsonResp[0]["summary"],
+    ...summary,
     ccode: ccode
   } as openbdResponse
 

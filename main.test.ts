@@ -176,6 +176,33 @@ describe("main.ts", () => {
             expect(actualResponse).toStrictEqual(expectedResponse);
         });
 
+        test("return null when the summary field of the response is missing", async () => {
+            let mockOpenbdResponse = [
+                {
+                    "onix": {
+                        "DescriptiveDetail": {
+                            "Subject": [{ "SubjectCode": "1040" }]
+                        }
+                    },
+                    "hanmoto": {
+                        "datemodified": '2024-05-17 10:05:43',
+                        "datecreated": '2024-05-15 10:04:37',
+                        "datekoukai": '2024-05-15'
+                    },
+                }
+            ];
+            // As to mock of fetch, see https://www.leighhalliday.com/mock-fetch-jest
+            global.fetch = jest.fn().mockImplementation(async () => Promise.resolve({
+                json: () => Promise.resolve(mockOpenbdResponse),
+            })
+            );
+
+            let inputISBN = '1111111111111';
+            let expectedResponse = null;
+            let actualResponse = await requestOpenbd(inputISBN);
+            expect(actualResponse).toStrictEqual(expectedResponse);
+        });
+
         test("return with empty ccode field when the openBD API response does not have Subject field", async () => {
             let mockOpenbdResponse = [
                 {
