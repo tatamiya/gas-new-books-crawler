@@ -402,9 +402,9 @@ describe("main.ts", () => {
 
             let inputCcode = "0141";
             let expectedDecoded = <DecodedGenre>{
-                ccode: "0001",
+                ccode: "0141",
                 target: "一般",
-                format: "文庫本",
+                format: "文庫",
                 genre: "数学",
             }
 
