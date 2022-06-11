@@ -251,4 +251,28 @@ function parseXML(xml: string): BookList {
   return bookList
 }
 
-export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse };
+interface CCodeTable {
+  _comment?: string,
+  taishou: { [key: string]: string },
+  keitai: { [key: string]: string },
+  naiyou: { [key: string]: string },
+}
+
+interface DecodedGenre {
+  ccode: string,
+  target: string,
+  format: string,
+  genre: string,
+}
+
+class CCodeConverter {
+  constructor(private table: CCodeTable) { }
+
+  convert(ccode: string): DecodedGenre {
+
+    return { ccode: "0000", target: "hoge", format: "fuga", genre: "piyo" }
+  }
+
+}
+
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse, CCodeConverter, CCodeTable, DecodedGenre };

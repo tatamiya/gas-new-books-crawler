@@ -1,4 +1,4 @@
-import { BookInfo, BookList, openbdResponse, requestOpenbdAndParse, SheetRow } from "./main";
+import { BookInfo, BookList, CCodeConverter, CCodeTable, DecodedGenre, openbdResponse, requestOpenbdAndParse, SheetRow } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -378,6 +378,48 @@ describe("main.ts", () => {
         )
         expect(actualSeetRows[1]).toStrictEqual(expectedSecondRow);
     });
+
+    describe("test Ccode converter", () => {
+
+        let sampleCodeTable = <CCodeTable>{
+            taishou: {
+                "0": "一般",
+                "1": "教養",
+            },
+
+            keitai: {
+                "0": "単行本",
+                "1": "文庫",
+            },
+
+            naiyou: {
+                "00": "総記",
+                "41": "数学",
+            }
+        };
+
+        test("convert ccode correctly", () => {
+
+            let inputCcode = "0141";
+            let expectedDecoded = <DecodedGenre>{
+                ccode: "0001",
+                target: "一般",
+                format: "文庫本",
+                genre: "数学",
+            }
+
+            let converter = new CCodeConverter(sampleCodeTable);
+            let actualDecoded = converter.convert(inputCcode);
+
+            expect(actualDecoded).toStrictEqual(expectedDecoded);
+        });
+
+        test("return null when input ccode is invalid", () => { });
+
+        test("return empty field when translation failed", () => { });
+
+    });
+
 
     test("integration test", () => {
         UrlFetchApp.fetch = jest.fn().mockImplementation(_ => {
