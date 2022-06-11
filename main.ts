@@ -269,8 +269,17 @@ class CCodeConverter {
   constructor(private table: CCodeTable) { }
 
   convert(ccode: string): DecodedGenre {
+    let splitCode = ccode.split("");
 
-    return { ccode: "0000", target: "hoge", format: "fuga", genre: "piyo" }
+    let targetCode = splitCode[0];
+    let formatCode = splitCode[1];
+    let genreCode = splitCode.slice(2, 4).join("");
+
+    let target = this.table.taishou[targetCode];
+    let format = this.table.keitai[formatCode];
+    let genre = this.table.naiyou[genreCode];
+
+    return <DecodedGenre>{ ccode: ccode, target: target, format: format, genre: genre }
   }
 
 }
