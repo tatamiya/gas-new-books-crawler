@@ -298,4 +298,14 @@ class CCodeConverter {
 
 }
 
+function initializeCcodeConverter(): CCodeConverter {
+  const userProperties = PropertiesService.getScriptProperties();
+  let ccodeTableFileId = userProperties.getProperty('CCODETABLE_FILE_ID')!;
+
+  let ccodeTableJSON = DriveApp.getFileById(ccodeTableFileId).getBlob().getDataAsString('utf8');
+  let table = <CCodeTable>JSON.parse(ccodeTableJSON);
+
+  return new CCodeConverter(table)
+}
+
 export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse, CCodeConverter, CCodeTable, DecodedGenre };
