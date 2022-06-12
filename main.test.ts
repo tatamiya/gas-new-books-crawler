@@ -414,9 +414,44 @@ describe("main.ts", () => {
             expect(actualDecoded).toStrictEqual(expectedDecoded);
         });
 
-        test("return null when input ccode is invalid", () => { });
+        test("return null when input ccode is invalid: contains non-number", () => {
+            let inputCcode = "0X01";
+            let expectedDecoded = null;
 
-        test("return empty field when translation failed", () => { });
+            let converter = new CCodeConverter(sampleCodeTable);
+            let actualDecoded = converter.convert(inputCcode);
+
+            expect(actualDecoded).toStrictEqual(expectedDecoded);
+
+        });
+
+        test("return null when input ccode is invalid: fewer than 4 digits", () => {
+            let inputCcode = "101";
+            let expectedDecoded = null;
+
+            let converter = new CCodeConverter(sampleCodeTable);
+            let actualDecoded = converter.convert(inputCcode);
+
+            expect(actualDecoded).toStrictEqual(expectedDecoded);
+
+        });
+
+        test("return empty field when translation failed", () => {
+
+            let inputCcode = "2022";
+            let expectedDecoded = <DecodedGenre>{
+                ccode: "2022",
+                target: "",
+                format: "単行本",
+                genre: "",
+            }
+
+            let converter = new CCodeConverter(sampleCodeTable);
+            let actualDecoded = converter.convert(inputCcode);
+
+            expect(actualDecoded).toStrictEqual(expectedDecoded);
+
+        });
 
     });
 
