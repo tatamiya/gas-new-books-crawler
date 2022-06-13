@@ -280,18 +280,9 @@ class CCodeConverter {
     let formatCode = splitCode[1];
     let genreCode = splitCode.slice(2, 4).join("");
 
-    let target = this.table.taishou[targetCode];
-    if (typeof target === "undefined") {
-      target = "";
-    }
-    let format = this.table.keitai[formatCode];
-    if (typeof format === "undefined") {
-      format = "";
-    }
-    let genre = this.table.naiyou[genreCode];
-    if (typeof genre === "undefined") {
-      genre = "";
-    }
+    let target = this.table.taishou[targetCode] ?? "";
+    let format = this.table.keitai[formatCode] ?? "";
+    let genre = this.table.naiyou[genreCode] ?? "";
 
     return <DecodedGenre>{ ccode: ccode, target: target, format: format, genre: genre }
   }
