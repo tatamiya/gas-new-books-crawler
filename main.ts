@@ -190,6 +190,9 @@ class BookInfo {
   public volume: string = "";
   public publisher: string = "";
   public ccode: string = "";
+  public target: string = "";
+  public format: string = "";
+  public genre: string = "";
   public createdDate: Date = new Date("");
   public lastUpdatedDate: Date = new Date("");
   public pubDate: Date;
@@ -220,8 +223,12 @@ class BookInfo {
     this.ccode = resp.ccode;
     this.createdDate = new Date(resp.datecreated);
     this.lastUpdatedDate = new Date(resp.datemodified);
+  }
 
-
+  updateGenre(resp: DecodedGenre) {
+    this.target = resp.target;
+    this.format = resp.format;
+    this.genre = resp.genre;
   }
 }
 

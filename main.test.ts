@@ -455,6 +455,27 @@ describe("main.ts", () => {
 
     });
 
+    test("update genre correctly", () => {
+        let sampleBookInfo = new BookInfo(
+            "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "http://example.com/bd/isbn/1111111111111",
+            "Sun, 31 Mar 2024 00:00:00+0900",
+            ["自然科学", "文庫"],
+        );
+        let inputGenre = <DecodedGenre>{
+            ccode: "0142",
+            target: "一般",
+            format: "文庫",
+            genre: "物理学",
+        }
+
+        sampleBookInfo.updateGenre(inputGenre);
+
+        expect(sampleBookInfo.target).toBe("一般");
+        expect(sampleBookInfo.format).toBe("文庫");
+        expect(sampleBookInfo.genre).toBe("物理学");
+    })
+
 
     test("integration test", () => {
         UrlFetchApp.fetch = jest.fn().mockImplementation(_ => {
