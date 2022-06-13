@@ -10,12 +10,19 @@ function crawlingNewBooks() {
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
+  let ccodeConverter = initializeCcodeConverter();
+
   // Fetch additional information from openBD API and add to book info.
   bookList.books.forEach(async book => {
     let isbn = book.isbn;
     let openbdRes = await requestOpenbdAndParse(isbn);
     if (openbdRes !== null) {
       book.addInfoFromOpenbd(openbdRes);
+    }
+
+    let decodedGenre = ccodeConverter.convert(book.ccode);
+    if (decodedGenre !== null) {
+      book.updateGenre(decodedGenre);
     }
   });
 
