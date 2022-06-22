@@ -1,3 +1,5 @@
+import { DecodedGenre, initializeCcodeConverter } from "./codeconverter";
+
 function crawlingNewBooks() {
   var url: string = "https://www.hanmoto.com/ci/bd/search/hdt/%E6%96%B0%E3%81%97%E3%81%8F%E7%99%BB%E9%8C%B2%E3%81%95%E3%82%8C%E3%81%9F%E6%9C%AC/sdate/today/created/today/order/desc/vw/rss20"
 
@@ -43,6 +45,26 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
   let newSheet = ss.insertSheet(name);
 
   return newSheet
+}
+
+async function updateBookInformation(bookList: BookList): Promise<BookList> {
+  let ccodeConverter = initializeCcodeConverter();
+
+  // Fetch additional information from openBD API and add to book info.
+  await Promise.all(bookList.books.map(async book => {
+    let isbn = book.isbn;
+    let openbdRes = await requestOpenbdAndParse(isbn);
+    if (openbdRes !== null) {
+      book.addInfoFromOpenbd(openbdRes);
+    }
+
+    let decodedGenre = ccodeConverter.convert(book.ccode);
+    if (decodedGenre !== null) {
+      book.updateGenre(decodedGenre);
+    }
+  }));
+
+  return bookList
 }
 
 interface openbdResponse {
@@ -277,52 +299,6 @@ function parseXML(xml: string): BookList {
   return bookList
 }
 
-interface CCodeTable {
-  _comment?: string,
-  taishou: { [key: string]: string },
-  keitai: { [key: string]: string },
-  naiyou: { [key: string]: string },
-}
 
-interface DecodedGenre {
-  ccode: string,
-  target: string,
-  format: string,
-  genre: string,
-}
+export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse, updateBookInformation };
 
-class CCodeConverter {
-  constructor(private table: CCodeTable) { }
-
-  convert(ccode: string): DecodedGenre | null {
-
-    if (/^-?\d+$/.test(ccode) === false || ccode.length != 4) {
-      return null
-    }
-
-    let splitCode = ccode.split("");
-
-    let targetCode = splitCode[0];
-    let formatCode = splitCode[1];
-    let genreCode = splitCode.slice(2, 4).join("");
-
-    let target = this.table.taishou[targetCode] ?? "";
-    let format = this.table.keitai[formatCode] ?? "";
-    let genre = this.table.naiyou[genreCode] ?? "";
-
-    return <DecodedGenre>{ ccode: ccode, target: target, format: format, genre: genre }
-  }
-
-}
-
-function initializeCcodeConverter(): CCodeConverter {
-  const userProperties = PropertiesService.getScriptProperties();
-  let ccodeTableFileId = userProperties.getProperty('CCODETABLE_FILE_ID')!;
-
-  let ccodeTableJSON = DriveApp.getFileById(ccodeTableFileId).getBlob().getDataAsString('utf8');
-  let table = <CCodeTable>JSON.parse(ccodeTableJSON);
-
-  return new CCodeConverter(table)
-}
-
-export { crawlingNewBooks, parseXML, BookList, BookInfo, SheetRow, openbdResponse, requestOpenbdAndParse, CCodeConverter, CCodeTable, DecodedGenre };

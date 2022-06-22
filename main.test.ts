@@ -1,4 +1,5 @@
-import { BookInfo, BookList, CCodeConverter, CCodeTable, DecodedGenre, openbdResponse, requestOpenbdAndParse, SheetRow } from "./main";
+import * as codeconverter from "./codeconverter";
+import { BookInfo, BookList, openbdResponse, requestOpenbdAndParse, SheetRow, updateBookInformation } from "./main";
 
 var inputXML = `
     <rss xmlns: content = "http://purl.org/rss/1.0/modules/content/" xmlns: admin = "http://webns.net/mvcb/" xmlns: rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns: dc = "http://purl.org/dc/elements/1.1/" xmlns: sy = "http://purl.org/rss/1.0/modules/syndication/" version = "2.0">
@@ -385,101 +386,81 @@ describe("main.ts", () => {
         expect(actualSeetRows[1]).toStrictEqual(expectedSecondRow);
     });
 
-    describe("test Ccode converter", () => {
 
-        let sampleCodeTable = <CCodeTable>{
-            taishou: {
-                "0": "一般",
-                "1": "教養",
-            },
+    test("update BookInfo correctly", async () => {
+        jest.mock('./codeconverter')
 
-            keitai: {
-                "0": "単行本",
-                "1": "文庫",
-            },
+        jest.spyOn(codeconverter, 'initializeCcodeConverter').mockImplementation(() => {
+            return new codeconverter.CCodeConverter(<codeconverter.CCodeTable>{
+                taishou: {
+                    "0": "一般",
+                    "1": "教養",
+                    "3": "専門書",
+                },
 
-            naiyou: {
-                "00": "総記",
-                "41": "数学",
+                keitai: {
+                    "0": "単行本",
+                    "1": "文庫",
+                },
+
+                naiyou: {
+                    "40": "自然科学総記",
+                    "42": "物理学",
+                }
             }
-        };
+            )
+        });
 
-        test("convert ccode correctly", () => {
-
-            let inputCcode = "0141";
-            let expectedDecoded = <DecodedGenre>{
-                ccode: "0141",
-                target: "一般",
-                format: "文庫",
-                genre: "数学",
+        // As to mock of fetch, see https://www.leighhalliday.com/mock-fetch-jest
+        global.fetch = jest.fn().mockImplementation(async function (url) {
+            let mockOpenbdResponse = [
+                {
+                    "onix": {
+                        "DescriptiveDetail": {
+                            "Subject": [{ "SubjectCode": "1040" }]
+                        }
+                    },
+                    "hanmoto": {
+                        "datemodified": '2024-05-17 10:05:43',
+                        "datecreated": '2024-05-15 10:04:37',
+                        "datekoukai": '2024-05-15'
+                    },
+                    "summary": {
+                        "isbn": '1111111111111',
+                        "title": 'ご冗談でしょう、tatamiyaさん',
+                        "volume": '1',
+                        "series": 'シリーズ畳の不思議',
+                        "publisher": '畳屋書店',
+                        "pubdate": '20240531',
+                        "cover": 'https://cover.openbd.jp/9784416522516.jpg',
+                        "author": 'tatamiya tamiya／著 畳の科学／編集'
+                    }
+                }
+            ];
+            if (url !== "https://api.openbd.jp/v1/get?isbn=1111111111111&pretty") {
+                return Promise.resolve({
+                    json: () => Promise.resolve([null]),
+                });
             }
-
-            let converter = new CCodeConverter(sampleCodeTable);
-            let actualDecoded = converter.convert(inputCcode);
-
-            expect(actualDecoded).toStrictEqual(expectedDecoded);
-        });
-
-        test("return null when input ccode is invalid: contains non-number", () => {
-            let inputCcode = "0X01";
-            let expectedDecoded = null;
-
-            let converter = new CCodeConverter(sampleCodeTable);
-            let actualDecoded = converter.convert(inputCcode);
-
-            expect(actualDecoded).toStrictEqual(expectedDecoded);
-
-        });
-
-        test("return null when input ccode is invalid: fewer than 4 digits", () => {
-            let inputCcode = "101";
-            let expectedDecoded = null;
-
-            let converter = new CCodeConverter(sampleCodeTable);
-            let actualDecoded = converter.convert(inputCcode);
-
-            expect(actualDecoded).toStrictEqual(expectedDecoded);
-
-        });
-
-        test("return empty field when translation failed", () => {
-
-            let inputCcode = "2022";
-            let expectedDecoded = <DecodedGenre>{
-                ccode: "2022",
-                target: "",
-                format: "単行本",
-                genre: "",
-            }
-
-            let converter = new CCodeConverter(sampleCodeTable);
-            let actualDecoded = converter.convert(inputCcode);
-
-            expect(actualDecoded).toStrictEqual(expectedDecoded);
-
-        });
-
-    });
-
-    test("update genre correctly", () => {
-        let sampleBookInfo = new BookInfo(
-            "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
-            "http://example.com/bd/isbn/1111111111111",
-            "Sun, 31 Mar 2024 00:00:00+0900",
-            ["自然科学", "文庫"],
-        );
-        let inputGenre = <DecodedGenre>{
-            ccode: "0142",
-            target: "一般",
-            format: "文庫",
-            genre: "物理学",
+            return Promise.resolve({
+                json: () => Promise.resolve(mockOpenbdResponse),
+            });
         }
+        );
 
-        sampleBookInfo.updateGenre(inputGenre);
+        let updatedBookList = await updateBookInformation(mockBookList);
 
-        expect(sampleBookInfo.target).toBe("一般");
-        expect(sampleBookInfo.format).toBe("文庫");
-        expect(sampleBookInfo.genre).toBe("物理学");
+        expect(updatedBookList.books[0].title).toBe("ご冗談でしょう、tatamiyaさん");
+        expect(updatedBookList.books[0].authors).toBe("tatamiya tamiya／著 畳の科学／編集");
+        expect(updatedBookList.books[0].publisher).toBe("畳屋書店");
+        expect(updatedBookList.books[0].ccode).toBe("1040");
+        expect(updatedBookList.books[0].genre).toBe("自然科学総記");
+
+        expect(updatedBookList.books[1].title).toBe("流体力学（後編） - 今井功(著 / 文) | 裳華房");
+        expect(updatedBookList.books[1].authors).toBe("");
+        expect(updatedBookList.books[1].publisher).toBe("");
+        expect(updatedBookList.books[1].ccode).toBe("");
+        expect(updatedBookList.books[1].genre).toBe("");
     })
 
 
