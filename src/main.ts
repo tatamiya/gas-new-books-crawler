@@ -47,7 +47,7 @@ function createOrReplaceSheet(ss: GoogleAppsScript.Spreadsheet.Spreadsheet, name
   return newSheet
 }
 
-async function updateBookInformation(bookList: BookList): Promise<BookList> {
+async function updateBookInformation(bookList: BookList) {
   let ccodeConverter = initializeCcodeConverter();
 
   // Fetch additional information from openBD API and add to book info.
@@ -63,8 +63,6 @@ async function updateBookInformation(bookList: BookList): Promise<BookList> {
       book.updateGenre(decodedGenre);
     }
   }));
-
-  return bookList
 }
 
 interface openbdResponse {

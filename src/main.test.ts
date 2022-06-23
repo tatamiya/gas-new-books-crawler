@@ -448,19 +448,19 @@ describe("main.ts", () => {
         }
         );
 
-        let updatedBookList = await updateBookInformation(mockBookList);
+        await updateBookInformation(mockBookList);
 
-        expect(updatedBookList.books[0].title).toBe("ご冗談でしょう、tatamiyaさん");
-        expect(updatedBookList.books[0].authors).toBe("tatamiya tamiya／著 畳の科学／編集");
-        expect(updatedBookList.books[0].publisher).toBe("畳屋書店");
-        expect(updatedBookList.books[0].ccode).toBe("1040");
-        expect(updatedBookList.books[0].genre).toBe("自然科学総記");
+        expect(mockBookList.books[0].title).toBe("ご冗談でしょう、tatamiyaさん");
+        expect(mockBookList.books[0].authors).toBe("tatamiya tamiya／著 畳の科学／編集");
+        expect(mockBookList.books[0].publisher).toBe("畳屋書店");
+        expect(mockBookList.books[0].ccode).toBe("1040");
+        expect(mockBookList.books[0].genre).toBe("自然科学総記");
 
-        expect(updatedBookList.books[1].title).toBe("流体力学（後編） - 今井功(著 / 文) | 裳華房");
-        expect(updatedBookList.books[1].authors).toBe("");
-        expect(updatedBookList.books[1].publisher).toBe("");
-        expect(updatedBookList.books[1].ccode).toBe("");
-        expect(updatedBookList.books[1].genre).toBe("");
+        expect(mockBookList.books[1].title).toBe("流体力学（後編） - 今井功(著 / 文) | 裳華房");
+        expect(mockBookList.books[1].authors).toBe("");
+        expect(mockBookList.books[1].publisher).toBe("");
+        expect(mockBookList.books[1].ccode).toBe("");
+        expect(mockBookList.books[1].genre).toBe("");
     })
 
 
