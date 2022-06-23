@@ -12,8 +12,6 @@ async function crawlingNewBooks() {
   let activeSpreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let todaysSheet: GoogleAppsScript.Spreadsheet.Sheet = createOrReplaceSheet(activeSpreadsheet, pubDateJST)
 
-  let ccodeConverter = initializeCcodeConverter();
-
   // Fetch additional information from openBD API and add to book info.
   await updateBookInformation(bookList);
 
