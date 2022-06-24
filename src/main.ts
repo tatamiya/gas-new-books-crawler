@@ -123,6 +123,7 @@ class BookList {
       'ISBN',
       '出版予定日',
       'タイトル・著者・出版社',
+      'タイトル',
       '著者',
       '出版社',
       'シリーズ',
@@ -144,6 +145,7 @@ class BookList {
         newBook.extractISBN(),
         newBook.pubDate.toISOString(),
         newBook.title,
+        newBook.detailedTitle,
         newBook.authors,
         newBook.publisher,
         newBook.series,
@@ -170,6 +172,7 @@ class SheetRow {
     private isbn: string,
     private pubDate: string,
     private title: string,
+    private detailedTitle: string,
     private author: string,
     private publisher: string,
     private series: string,
@@ -190,6 +193,7 @@ class SheetRow {
       this.isbn,
       this.pubDate,
       this.title,
+      this.detailedTitle,
       this.author,
       this.publisher,
       this.series,
@@ -210,6 +214,7 @@ class SheetRow {
 class BookInfo {
   public isbn: string;
   public title: string;
+  public detailedTitle: string = "";
   public url: string;
   public authors: string = "";
   public series: string = "";
@@ -239,9 +244,7 @@ class BookInfo {
   }
 
   addInfoFromOpenbd(resp: openbdResponse) {
-    if (resp.title !== "") {
-      this.title = resp.title;
-    }
+    this.detailedTitle = resp.title;
     this.authors = resp.author;
     this.series = resp.series;
     this.volume = resp.volume;

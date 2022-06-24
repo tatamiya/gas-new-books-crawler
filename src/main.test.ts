@@ -331,7 +331,7 @@ describe("main.ts", () => {
         sampleBookInfo.addInfoFromOpenbd(inputParsedResponse);
 
         expect(sampleBookInfo.authors).toStrictEqual('tatamiya tamiya／著 畳の科学／編集');
-        expect(sampleBookInfo.title).toStrictEqual('ご冗談でしょう、tatamiyaさん');
+        expect(sampleBookInfo.detailedTitle).toStrictEqual('ご冗談でしょう、tatamiyaさん');
         expect(sampleBookInfo.series).toStrictEqual('シリーズ畳の不思議');
         expect(sampleBookInfo.volume).toStrictEqual('1');
         expect(sampleBookInfo.publisher).toStrictEqual('畳屋書店');
@@ -351,6 +351,7 @@ describe("main.ts", () => {
             'ISBN',
             '出版予定日',
             'タイトル・著者・出版社',
+            'タイトル',
             '著者',
             '出版社',
             'シリーズ',
@@ -370,6 +371,7 @@ describe("main.ts", () => {
             "1111111111111",
             "2024-03-30T15:00:00.000Z",
             "ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店",
+            "",
             "",
             "",
             "",
@@ -450,7 +452,8 @@ describe("main.ts", () => {
 
         await updateBookInformation(mockBookList);
 
-        expect(mockBookList.books[0].title).toBe("ご冗談でしょう、tatamiyaさん");
+        expect(mockBookList.books[0].title).toBe("ご冗談でしょう、tatamiyaさん - tatamiya tamiya(著 / 文) | 畳屋書店");
+        expect(mockBookList.books[0].detailedTitle).toBe("ご冗談でしょう、tatamiyaさん");
         expect(mockBookList.books[0].authors).toBe("tatamiya tamiya／著 畳の科学／編集");
         expect(mockBookList.books[0].publisher).toBe("畳屋書店");
         expect(mockBookList.books[0].ccode).toBe("1040");
